@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="魁北克汽保设备潜在客户的内部审阅界面，用于筛选地区、主营业务与设备适配度。"
+    />
+    <meta name="color-scheme" content="light" />
+    <title>Atelier Québec · 潜在客户审阅台</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script src="assets/app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#" aria-label="Atelier Québec 首页">
+          <span class="brand-mark" aria-hidden="true">AQ</span>
+          <span>
+            <strong>Atelier Québec</strong>
+            <small>Équipement d’atelier · Prospection B2B</small>
+          </span>
+        </a>
+        <div class="header-meta" aria-label="资料使用范围">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>内部审阅骨架</span>
+          <span class="header-divider" aria-hidden="true"></span>
+          <span>空资料库</span>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="hero page-shell" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Québec · Automotive Aftermarket</p>
+          <h1 id="page-title">把全省潜在客户，整理成可审阅的销售地图。</h1>
+          <p class="hero-intro">
+            面向举升机、扒胎机与平衡机的销售团队，按行政区、主营业务和设备适配度筛选维修与保养场所。
+            每条记录保留来源与核验状态，便于后续邮寄、电话核实和销售分派。
+          </p>
+          <div class="hero-pills" aria-label="主要能力">
+            <span>17 个行政区</span>
+            <span>站点级记录</span>
+            <span>字段级核验</span>
+          </div>
+        </div>
+
+        <aside class="privacy-callout" aria-labelledby="privacy-callout-title">
+          <span class="privacy-kicker">Publication Guardrail</span>
+          <h2 id="privacy-callout-title">公开页面只放脱敏资料</h2>
+          <p>
+            GitHub Pages 上的 HTML 与 JSON 都可被下载。完整姓名、邮箱、企业手机/短信号码和直线电话应留在受控数据库或有登录权限的系统中。
+          </p>
+          <a href="#privacy-method">查看资料边界</a>
+        </aside>
+      </section>
+
+      <section class="stats page-shell" aria-label="当前筛选统计">
+        <article class="stat-card">
+          <span class="stat-label">符合筛选的站点</span>
+          <strong id="stat-sites">0</strong>
+          <small id="stat-sites-context">尚未导入资料</small>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">邮寄地址已核验</span>
+          <strong id="stat-mailable">0</strong>
+          <small>可生成邮寄标签</small>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">有企业联络入口</span>
+          <strong id="stat-contactable">0</strong>
+          <small>企业邮箱、电话或网站</small>
+        </article>
+        <article class="stat-card stat-card-accent">
+          <span class="stat-label">高设备适配</span>
+          <strong id="stat-high-fit">0</strong>
+          <small>至少一类设备为高适配</small>
+        </article>
+      </section>
+
+      <section class="workspace page-shell" aria-labelledby="workspace-title">
+        <div class="workspace-heading">
+          <div>
+            <p class="section-kicker">Prospect Explorer</p>
+            <h2 id="workspace-title">潜在客户资料</h2>
+          </div>
+          <p id="result-summary" class="result-summary" aria-live="polite">正在读取资料库…</p>
+        </div>
+
+        <form id="filter-form" class="filters" role="search">
+          <label class="field field-search">
+            <span>搜索</span>
+            <span class="search-control">
+              <span class="search-icon" aria-hidden="true"></span>
+              <input
+                id="search-input"
+                type="search"
+                autocomplete="off"
+                placeholder="店名、城市、邮编、业务或角色"
+              />
+            </span>
+          </label>
+
+          <label class="field">
+            <span>行政区</span>
+            <select id="region-filter">
+              <option value="">全部行政区</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>主营业务</span>
+            <select id="category-filter">
+              <option value="">全部类别</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>设备适配</span>
+            <select id="equipment-filter">
+              <option value="">全部设备</option>
+              <option value="lift">举升机 · 中等以上</option>
+              <option value="tire_changer">扒胎机 · 中等以上</option>
+              <option value="balancer">平衡机 · 中等以上</option>
+            </select>
+          </label>
+
+          <button id="reset-filters" class="reset-button" type="reset">清除筛选</button>
+        </form>
+
+        <div id="load-error" class="notice notice-error" role="alert" hidden>
+          <strong>资料读取失败。</strong>
+          <span>
+            请确认 <code>data/prospects.json</code> 存在，并通过网页服务器打开此站点。
+          </span>
+        </div>
+
+        <div id="empty-state" class="empty-state" aria-live="polite">
+          <div class="empty-mark" aria-hidden="true">QC</div>
+          <h3 id="empty-title">资料库尚未导入任何潜在客户</h3>
+          <p id="empty-copy">
+            当前 JSON 为安全的空资料。完成来源核验后，可按 README 的字段结构导入脱敏记录；完整联系人请勿提交到公开仓库。
+          </p>
+        </div>
+
+        <div id="table-view" class="table-wrap" hidden>
+          <table>
+            <caption class="sr-only">魁北克汽保设备潜在客户筛选结果</caption>
+            <thead>
+              <tr>
+                <th scope="col">企业 / 站点</th>
+                <th scope="col">地区与邮寄</th>
+                <th scope="col">经营性质</th>
+                <th scope="col">设备适配</th>
+                <th scope="col">联络入口</th>
+                <th scope="col">核验</th>
+              </tr>
+            </thead>
+            <tbody id="prospects-body"></tbody>
+          </table>
+        </div>
+
+        <div id="card-view" class="prospect-cards" hidden aria-label="潜在客户筛选结果"></div>
+      </section>
+
+      <section class="method page-shell" aria-labelledby="method-title">
+        <div class="method-heading">
+          <p class="section-kicker">Data Standard</p>
+          <h2 id="method-title">每条记录如何进入资料库</h2>
+          <p>
+            站点是最小单位：同一品牌的每个实际维修地点分别记录。主营业务和设备适配是销售判断，必须与原始来源分开保存。
+          </p>
+        </div>
+
+        <div class="method-grid">
+          <article>
+            <span class="method-number">01</span>
+            <h3>发现候选站点</h3>
+            <p>从可合法复用的目录、行业协会、企业官网和公开机构名单建立候选，不把单一平台当作永久母库。</p>
+          </article>
+          <article>
+            <span class="method-number">02</span>
+            <h3>核实邮寄与业务</h3>
+            <p>完整商业地址是硬性字段，至少达到 A2（企业来源与独立来源一致）；电话、网站与主营业务逐字段留存来源和日期。</p>
+          </article>
+          <article>
+            <span class="method-number">03</span>
+            <h3>形成销售优先级</h3>
+            <p>分别判断举升机、扒胎机和平衡机适配度，再结合站点类型、车辆范围与核验完整度生成优先级。</p>
+          </article>
+        </div>
+
+        <div id="privacy-method" class="privacy-panel">
+          <div>
+            <p class="section-kicker">Privacy & Outreach</p>
+            <h2>联系人资料不等于公开网页内容</h2>
+          </div>
+          <div class="privacy-rules">
+            <p>
+              <strong>公开版：</strong>
+              只展示企业名称、商业地址、业务类别、汇总评分、总机和网站；邮箱与企业手机仅显示“是否具备”，不公开具体值。
+            </p>
+            <p>
+              <strong>内部版：</strong>
+              具体收件人、邮箱、企业手机、来源、核验日期、联系依据与拒绝联系状态应存于有权限控制的 Excel、CRM 或私有数据库。
+            </p>
+            <p>
+              <strong>默认收件人：</strong>
+              无可靠公开姓名时使用职位，如「À l’attention du directeur du service」；不猜测姓名或个人邮箱格式。
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="page-shell footer-inner">
+        <p><strong>Atelier Québec</strong> · Internal prospect review prototype</p>
+        <p id="data-footnote">资料状态：未载入</p>
+      </div>
+    </footer>
+  </body>
+</html>
